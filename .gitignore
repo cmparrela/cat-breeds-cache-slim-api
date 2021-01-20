@@ -1,3 +1,5 @@
-/src/vendor
-/src/.env
+/vendor/
+/logs/*
 .docker
+.env
+.phpunit.result.cache
