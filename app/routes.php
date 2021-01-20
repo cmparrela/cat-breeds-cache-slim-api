@@ -19,4 +19,5 @@ return function (App $app) {
         return $response;
     });
 
+    $app->get('/auth', AuthenticateAction::class);
 };
