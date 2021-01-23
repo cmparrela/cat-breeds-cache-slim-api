@@ -6,7 +6,6 @@ use App\Actions\Authentication\AuthenticateAction;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
-use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 return function (App $app) {
     $app->options('/{routes:.*}', function (Request $request, Response $response) {
@@ -19,5 +18,5 @@ return function (App $app) {
         return $response;
     });
 
-    $app->get('/auth', AuthenticateAction::class);
+    $app->post('/login', AuthenticateAction::class);
 };

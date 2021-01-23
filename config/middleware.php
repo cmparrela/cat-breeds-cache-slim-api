@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use Slim\App;
+use Tuupola\Middleware\JwtAuthentication;
+use Tuupola\Middleware\HttpBasicAuthentication;
 
 return function (App $app) {
-    $app->add(new Tuupola\Middleware\JwtAuthentication([
+    $app->add(new JwtAuthentication([
         "secret" => $_ENV["JWT_SECRET"],
         "error" => function ($response, $arguments) {
             $data["status"] = "error";
@@ -14,6 +16,6 @@ return function (App $app) {
                 ->withHeader("Content-Type", "application/json")
                 ->getBody()->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
         },
-        'ignore' => ['/auth']
+        'ignore' => ['/login']
     ]));
 };

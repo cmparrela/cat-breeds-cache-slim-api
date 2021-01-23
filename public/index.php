@@ -18,20 +18,7 @@ $dotenv->load();
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
-
-if (false) { // Should be set to true in production
-	$containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
-}
-
-// Set up settings
-$settings = require __DIR__ . '/../app/settings.php';
-$settings($containerBuilder);
-
-// Set up dependencies
-$dependencies = require __DIR__ . '/../app/dependencies.php';
-$dependencies($containerBuilder);
-
-// Build PHP-DI Container instance
+$containerBuilder->addDefinitions(__DIR__ . '/../config/container.php');
 $container = $containerBuilder->build();
 
 // Instantiate the app
@@ -40,12 +27,13 @@ $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
 
 // Register middleware
-$middleware = require __DIR__ . '/../app/middleware.php';
-$middleware($app);
+(require __DIR__ . '/../config/middleware.php')($app);
 
 // Register routes
-$routes = require __DIR__ . '/../app/routes.php';
-$routes($app);
+(require __DIR__ . '/../config/routes.php')($app);
+
+// Register database eloquent
+(require __DIR__ . '/../config/eloquent.php')($container);
 
 /** @var bool $displayErrorDetails */
 $displayErrorDetails = $container->get(SettingsInterface::class)->get('displayErrorDetails');

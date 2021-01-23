@@ -55,11 +55,7 @@ abstract class Action
         $this->response = $response;
         $this->args = $args;
 
-        try {
-            return $this->action();
-        } catch (DomainRecordNotFoundException $e) {
-            throw new HttpNotFoundException($this->request, $e->getMessage());
-        }
+        return $this->action();
     }
 
     /**
@@ -122,5 +118,21 @@ abstract class Action
         return $this->response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($payload->getStatusCode());
+    }
+
+    /**
+     * @param  string $name
+     * @return mixed
+     * @throws HttpBadRequestException
+     */
+    protected function resolveParam(string $name)
+    {
+        $parsedBody = $this->request->getParsedBody();
+
+        if (!isset($parsedBody[$name])) {
+            throw new HttpBadRequestException($this->request, "Could not resolve parameter `{$name}`.");
+        }
+
+        return $parsedBody[$name];
     }
 }
