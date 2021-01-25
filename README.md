@@ -9,15 +9,29 @@ Você pode rodar esse projeto usando o [Docker Compose](https://docs.docker.com/
 ```sh
 $ docker-compose up  -d
 ```
+
 Para instalar as dependências da aplicação será necessário executar o `composer install`, isso pode ser feito dentro do container PHP.
 ```sh
-> $ docker exec -it desafio.php sh
-/var/www/html > $ composer install
+> $ docker exec -it desafio.php composer install
+```
+
+Em seguida crie o arquivo .env baseado no exemplo
+```sh
+> $ docker exec -it desafio.php cp .env.example .env
+```
+
+Por último rode os migration para criar a base inicial
+```sh
+> $ docker exec -it desafio.php vendor/bin/phinx migrate
 ```
 
 Agora você deve ser capaz de visitar a página da aplicação http://localhost/ e começar a usar o sistema
 ## Endpoints
-- ...
+- `POST login`, fazer o login no sistema
+- `GET breeds`, buscar uma raça
+ 
+Para mais detalhe visite a documentação completa https://documenter.getpostman.com/view/1472725/TW6tMVtC
+ 
 
  
 
