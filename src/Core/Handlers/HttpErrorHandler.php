@@ -1,21 +1,23 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Core\Handlers;
 
+use Exception;
+use Throwable;
 use App\Actions\ActionError;
 use App\Actions\ActionPayload;
-use Exception;
-use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
-use Slim\Exception\HttpForbiddenException;
-use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
-use Slim\Exception\HttpNotImplementedException;
+use Slim\Exception\HttpForbiddenException;
+use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Exception\HttpNotImplementedException;
+use Slim\Exception\HttpMethodNotAllowedException;
+use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
-use Throwable;
+use App\Exceptions\HttpUnauthorizedException as CustomHttpUnauthorizedException;
 
 class HttpErrorHandler extends SlimErrorHandler
 {
@@ -48,6 +50,8 @@ class HttpErrorHandler extends SlimErrorHandler
             } elseif ($exception instanceof HttpNotImplementedException) {
                 $error->setType(ActionError::NOT_IMPLEMENTED);
             }
+        } elseif ($exception instanceof CustomHttpUnauthorizedException) {
+            $error->setType(ActionError::UNAUTHENTICATED);
         }
 
         if (

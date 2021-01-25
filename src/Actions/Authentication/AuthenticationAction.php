@@ -12,10 +12,8 @@ abstract class AuthenticationAction extends Action
 {
     protected $userService;
 
-    public function __construct(
-        LoggerInterface $logger,
-        UserService $userService
-    ) {
+    public function __construct(LoggerInterface $logger, UserService $userService)
+    {
         parent::__construct($logger);
         $this->userService = $userService;
     }

@@ -81,20 +81,6 @@ abstract class Action
     }
 
     /**
-     * @param  string $name
-     * @return mixed
-     * @throws HttpBadRequestException
-     */
-    protected function resolveArg(string $name)
-    {
-        if (!isset($this->args[$name])) {
-            throw new HttpBadRequestException($this->request, "Could not resolve argument `{$name}`.");
-        }
-
-        return $this->args[$name];
-    }
-
-    /**
      * @param array|object|null $data
      * @param int $statusCode
      * @return Response
@@ -120,19 +106,41 @@ abstract class Action
             ->withStatus($payload->getStatusCode());
     }
 
+
     /**
+     * Resolve arguments received from url
+     * 
+     * @param  string $name
+     * @return mixed
+     * @throws HttpBadRequestException
+     */
+    protected function resolveArg(string $name)
+    {
+        if (!isset($this->args[$name])) {
+            throw new HttpBadRequestException($this->request, "Argument `{$name}` not found.");
+        }
+
+        return $this->args[$name];
+    }
+
+    /**
+     * Resolve body and query parameters
+     * 
      * @param  string $name
      * @return mixed
      * @throws HttpBadRequestException
      */
     protected function resolveParam(string $name)
     {
-        $parsedBody = $this->request->getParsedBody();
+        $bodyParam = $this->request->getParsedBody();
+        $queryParam = $this->request->getQueryParams();
 
-        if (!isset($parsedBody[$name])) {
-            throw new HttpBadRequestException($this->request, "Could not resolve parameter `{$name}`.");
+        if (isset($bodyParam[$name])) {
+            return $bodyParam[$name];
+        } else if (isset($queryParam[$name])) {
+            return $queryParam[$name];
+        } else {
+            throw new HttpBadRequestException($this->request, "Parameter `{$name}` not found.");
         }
-
-        return $parsedBody[$name];
     }
 }
